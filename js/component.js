@@ -12,9 +12,9 @@ export default class Component {
     }
 
 
-    on(eventName, selector, callback) {
+    on(eventName, elementName, callback) {
         this._element.addEventListener(eventName, (event) => {
-            let delegateTarget = event.target.closest(selector);
+            let delegateTarget = event.target.closest(`[data-element="${ elementName }"]`);
             
             if ( !delegateTarget ) {
                 return;

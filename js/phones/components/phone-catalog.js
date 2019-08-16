@@ -12,7 +12,7 @@ export default class PhoneCatalog extends Component {
 
         this._render();
 
-        this.on('click', '[data-element="details-link"]', (event) => {
+        this.on('click', 'details-link', (event) => {
             let phoneElement = event.target.closest('[data-element="phone"]');
             
             this._onPhoneSelected(phoneElement.dataset.phoneId);

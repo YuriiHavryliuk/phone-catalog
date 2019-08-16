@@ -5,15 +5,14 @@ export default class PhoneViewer extends Component {
         super({ element });
 
         this._onBack = onBack;
-          
-        this._element.addEventListener('click', (event) => {
-            let backButton = event.target.closest('[data-element="button-back"]');
 
-            if ( !backButton ) {
-                return;
-            } 
+        this.on('click', 'button-back', this._onBack);
 
-            this._onBack();
+        this.on('click', 'small-image', (event) => {
+            const smallImage = event.target;
+            const largeImage = this._element.querySelector('[data-element="large-image"]');
+            
+            largeImage.src = smallImage.src;
         })
     }
 
@@ -29,7 +28,7 @@ export default class PhoneViewer extends Component {
         const phone = this._phoneDetails;
 
         this._element.innerHTML = `
-        <img class="phone" src="${ phone.images[0] }">
+        <img class="phone" data-element="large-image" src="${ phone.images[0] }">
 
         <button data-element="button-back">Back</button>
         <button>Add to basket</button>
@@ -37,26 +36,13 @@ export default class PhoneViewer extends Component {
         <h1>${ phone.name }</h1>
 
         <p>${ phone.description }</p>
-
         <ul class="phone-thumbs">
-        <li>
-            <img src="${ phone.images[1] }">
-        </li>
-        <li>
-            <img src="${ phone.images[2] }">
-        </li>
-        <li>
-            <img src="${ phone.images[3] }">
-        </li>
-        <li>
-            <img src="${ phone.images[4] }">
-        </li>
-        <li>
-            <img src="${ phone.images[5] }">
-        </li>
-        <li>
-            <img src="${ phone.images[6] }">
-        </li>
+            ${ phone.images.map(imageUrl => `
+                <li>
+                    <img data-element="small-image" src="${ imageUrl }">
+                </li>
+            `).join('')}
+
         </ul>
         `;
     }
