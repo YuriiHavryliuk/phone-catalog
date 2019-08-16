@@ -11,11 +11,24 @@ export default class PhonesPage {
         this._catalog = new PhoneCatalog({
             element: document.querySelector('[data-component="phone-catalog"]'),
             phones: PhoneService.getAll(),
+
+            onPhoneSelected: (phoneId) => {
+                const phoneDetails = PhoneService.getById(phoneId);
+
+                this._catalog.hide();
+                this._viewer.show(phoneDetails);
+            },
         });
 
         this._viewer = new PhoneViewer({
             element: document.querySelector('[data-component="phone-viewer"]'),
+
+            onBack: () => {
+                this._viewer.hide();
+                this._catalog.show();
+            },
         });
+
     }
 
     _render() {

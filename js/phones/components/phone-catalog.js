@@ -1,16 +1,35 @@
-export default class PhoneCatalog {
-    constructor({ element, phones = [] }) {
-        this._element = element;
+import Component from '../../component.js';
+
+export default class PhoneCatalog extends Component {
+    constructor({ element, 
+        phones = [], 
+        onPhoneSelected = ()  => {}
+    }) {
+        super({ element });
+
         this._phones = phones;
+        this._onPhoneSelected = onPhoneSelected;
+
         this._render();
+
+        this.on('click', '[data-element="details-link"]', (event) => {
+            let phoneElement = event.target.closest('[data-element="phone"]');
+            
+            this._onPhoneSelected(phoneElement.dataset.phoneId);
+        });
     }
 
     _render() {
         this._element.innerHTML = `
         <ul class="phones">
             ${this._phones.map(phone => `
-                <li class="thumbnail">
-                <a href="#!/phones/${ phone.id }" class="thumb">
+                <li 
+                    class="thumbnail" 
+                    data-element="phone" 
+                    data-phone-id="${ phone.id }">
+                <a href="#!/phones/${ phone.id }" 
+                    class="thumb" 
+                    data-element="details-link">
                 <img alt="${ phone.name }" src="${ phone.imageUrl }">
                 </a>
     
@@ -20,7 +39,9 @@ export default class PhoneCatalog {
                 </a>
                 </div>
     
-                <a href="#!/phones/${ phone.id }">${ phone.name }</a>
+                <a 
+                    href="#!/phones/${ phone.id }" 
+                    data-element="details-link">${ phone.name }</a>
                 <p>${ phone.snippet }</p>
             </li>
             `).join('')}
