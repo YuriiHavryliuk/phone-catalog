@@ -65,7 +65,7 @@ export default class PhonesPage {
         <div class="row">
 
         <!--Sidebar-->
-        <div class="col-md-2">
+        <div class="col-md-3">
           <section>
               <div data-component="filter"></div>
           </section>
@@ -76,7 +76,7 @@ export default class PhonesPage {
         </div>
   
         <!--Main content-->
-        <div class="col-md-10">
+        <div class="col-md-9">
             <div data-component="phone-catalog"></div>
             <div data-component="phone-viewer" hidden></div>
         </div>

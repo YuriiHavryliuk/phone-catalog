@@ -13,6 +13,12 @@ export default class ShoppingCard extends Component {
             
             this.remove(itemElement.dataset.itemId);
         });
+
+        this.on('click', 'more', (event) => {
+            let itemElement = event.target.closest('[data-element="item"]');
+            
+            this.add(itemElement.dataset.itemId);
+        });
     }
 
     add(itemId) {
@@ -44,9 +50,10 @@ export default class ShoppingCard extends Component {
             <p>Shopping Cart</p>
             <ul>
                 ${Object.entries(this._itemsMap).map( ([itemId, quantity]) => `
-                <li data-element="item" data-item-id="${ itemId }">
-                    ${ itemId }<span class="counter"> (${ quantity })</span>
+                <li class="card-item" data-element="item" data-item-id="${ itemId }">
                     <button data-element="less">-</button>
+                    ${ itemId }<span class="counter"> (${ quantity })</span>
+                    <button data-element="more">+</button>
                 </li>
             `
             ).join('')}

@@ -5,6 +5,14 @@ body {
   background-color: lightgoldenrodyellow;
 }
 
+ul {
+  padding: 5px;
+}
+
+.card-item {
+  margin: 3px 0;
+}
+
 .phone-images {
   background-color: white;
   width: 450px;
