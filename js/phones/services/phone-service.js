@@ -23,15 +23,16 @@ const PhoneService = {
         return new Promise((resolve, reject) => {
             const url = `${ BASE_URL }/api/phones.json`;
 
-            const callbackForSendRequest = (phonesFromServer) => {
-                const filteredPhones = this._filter(phonesFromServer, query);
-                const sortedPhones = this._sortBy(filteredPhones, sortBy);
-        
-                resolve(sortedPhones);
-            };
-
             const requestPromise = this._sendRequest(url);
-                requestPromise.then(callbackForSendRequest);
+
+            requestPromise
+                .then((phonesFromServer) => {
+                    const filteredPhones = this._filter(phonesFromServer, query);
+                    const sortedPhones = this._sortBy(filteredPhones, sortBy);
+            
+                    resolve(sortedPhones);
+                })
+                .catch((error) => reject(error));
         });
     },
 
