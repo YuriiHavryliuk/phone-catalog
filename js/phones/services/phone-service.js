@@ -1,36 +1,44 @@
+const BASE_URL = 'https://mate-academy.github.io/phone-catalogue-static/';
 const PhoneService = {
-    _get(requestType, requestLink, callback) {
-        let xhr = new XMLHttpRequest();
 
-        xhr.open(requestType, requestLink, true);
+    _sendRequest(url) {
+        return new Promise((resolve, reject) => {
+            let xhr = new XMLHttpRequest();
 
-        xhr.send();
-
-        xhr.onload = () => {
-            if ( xhr.status !== 200 ) {
-                console.log(`${ xhr.status } ${ xhr.statusText }`)
-                return [];
+            xhr.open('GET', url, true);
+            xhr.send();
+            xhr.onload = () => {
+                if ( xhr.status !== 200 ) {
+                    reject(`${ xhr.status } ${ xhr.statusText }`);
+                    return;
+                }
+        
+                const data = JSON.parse(xhr.responseText);
+                resolve(data);
             }
-    
-            const data = JSON.parse(xhr.responseText);
-
-            callback(data);
-        }
+        })
     },
     
-    getAll({ query = '', sortBy = ''} = {}, callback) {
-        this._get('GET','https://mate-academy.github.io/phone-catalogue-static/api/phones.json', (data) => {
-    
-            const filteredPhones = this._filter(data, query);
-            const sortedPhones = this._sortBy(filteredPhones, sortBy);
-    
-            callback(sortedPhones);
+    getAll({ query = '', sortBy = ''} = {}) {
+        return new Promise((resolve, reject) => {
+            const url = `${ BASE_URL }/api/phones.json`;
+
+            const callbackForSendRequest = (phonesFromServer) => {
+                const filteredPhones = this._filter(phonesFromServer, query);
+                const sortedPhones = this._sortBy(filteredPhones, sortBy);
+        
+                resolve(sortedPhones);
+            };
+
+            const requestPromise = this._sendRequest(url);
+                requestPromise.then(callbackForSendRequest);
         });
-
     },
 
-    getById(phoneId, callback) {
-        this._get('GET',`https://mate-academy.github.io/phone-catalogue-static/api/phones/${ phoneId }.json`, callback);
+    getById(phoneId) {
+        const url = `${ BASE_URL }/api/phones/${ phoneId }.json`;
+
+        return this._sendRequest(url);
     },
 
     _filter(phones, query) {

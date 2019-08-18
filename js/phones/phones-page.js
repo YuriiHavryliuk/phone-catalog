@@ -23,7 +23,10 @@ export default class PhonesPage {
       this._showPhones();
 
       this._catalog.subscribe('phone-selected', (phoneId) => {
-        PhoneService.getById(phoneId, (phoneDetails) => {
+
+         const detailsPromise = PhoneService.getById(phoneId);
+
+         detailsPromise.then((phoneDetails) => {
           this._catalog.hide();
           this._viewer.show(phoneDetails);
         });
@@ -72,9 +75,15 @@ export default class PhonesPage {
     _showPhones() {
         let currentFiltering = this._filter.getCurrentData();
         
-        PhoneService.getAll( currentFiltering, (phones) => {
-          this._catalog.show(phones);
-      });
+        // PhoneService.getAll( currentFiltering, (phones) => {
+        //   this._catalog.show(phones);
+        // });
+
+        const phonesPromise = PhoneService.getAll(currentFiltering);
+
+        phonesPromise.then((phones) => {
+            this._catalog.show(phones);
+        });
     }
 
     _render() {
