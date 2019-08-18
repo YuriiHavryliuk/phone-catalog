@@ -19,21 +19,31 @@ const PhoneService = {
         })
     },
     
-    getAll({ query = '', sortBy = ''} = {}) {
-        return new Promise((resolve, reject) => {
-            const url = `${ BASE_URL }/api/phones.json`;
+    // getAll({ query = '', sortBy = ''} = {}) {
+    //     const url = `${ BASE_URL }/api/phones.json`;
 
-            const requestPromise = this._sendRequest(url);
-
-            requestPromise
-                .then((phonesFromServer) => {
-                    const filteredPhones = this._filter(phonesFromServer, query);
-                    const sortedPhones = this._sortBy(filteredPhones, sortBy);
+    //     return this._sendRequest(url)
+    //         .then((phonesFromServer) => {
+    //             const filteredPhones = this._filter(phonesFromServer, query);
+    //             const sortedPhones = this._sortBy(filteredPhones, sortBy);
             
-                    resolve(sortedPhones);
-                })
-                .catch((error) => reject(error));
-        });
+    //             return sortedPhones;
+    //         })
+    //         .catch((error) => {
+    //             console.log(error);
+    //             return [];
+    //         });
+    // },
+
+    async getAll({ query = '', sortBy = ''} = {}) {
+        const url = `${ BASE_URL }/api/phones.json`;
+
+        const phonesFromServer = await this._sendRequest(url);
+
+        const filteredPhones = this._filter(phonesFromServer, query);
+        const sortedPhones = this._sortBy(filteredPhones, sortBy);
+            
+        return sortedPhones;
     },
 
     getById(phoneId) {
