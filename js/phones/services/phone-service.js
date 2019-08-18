@@ -1,49 +1,36 @@
 const PhoneService = {
-    getAll({ query = '', sortBy = ''} = {}) {
+    _get(requestType, requestLink, callback) {
         let xhr = new XMLHttpRequest();
 
-        xhr.open(
-            'GET', 
-            'https://mate-academy.github.io/phone-catalogue-static/api/phones.json',
-            false
-        );
-
-        xhr.send();
-
-        if ( xhr.status !== 200 ) {
-            console.log(`${ xhr.status } ${ xhr.statusText }`)
-            return [];
-        }
-
-        const phonesFromServer = JSON.parse(xhr.responseText);
-
-        const filteredPhones = this._filter(phonesFromServer, query);
-        const sortedPhones = this._sortBy(filteredPhones, sortBy);
-
-        return sortedPhones;
-    },
-
-    getById(phoneId, callback) {
-        let xhr = new XMLHttpRequest();
-
-        xhr.open(
-            'GET', 
-            `https://mate-academy.github.io/phone-catalogue-static/api/phones/${ phoneId }.json`,
-            true
-        );
+        xhr.open(requestType, requestLink, true);
 
         xhr.send();
 
         xhr.onload = () => {
             if ( xhr.status !== 200 ) {
                 console.log(`${ xhr.status } ${ xhr.statusText }`)
-                return {};
+                return [];
             }
     
-            const phoneDetails = JSON.parse(xhr.responseText);
+            const data = JSON.parse(xhr.responseText);
 
-            callback(phoneDetails);
-        };
+            callback(data);
+        }
+    },
+    
+    getAll({ query = '', sortBy = ''} = {}, callback) {
+        this._get('GET','https://mate-academy.github.io/phone-catalogue-static/api/phones.json', (data) => {
+    
+            const filteredPhones = this._filter(data, query);
+            const sortedPhones = this._sortBy(filteredPhones, sortBy);
+    
+            callback(sortedPhones);
+        });
+
+    },
+
+    getById(phoneId, callback) {
+        this._get('GET',`https://mate-academy.github.io/phone-catalogue-static/api/phones/${ phoneId }.json`, callback);
     },
 
     _filter(phones, query) {

@@ -70,10 +70,11 @@ export default class PhonesPage {
   }
 
     _showPhones() {
-      let currentFiltering = this._filter.getCurrentData();
-      let phones = PhoneService.getAll( currentFiltering );
-
-      this._catalog.show(phones);
+        let currentFiltering = this._filter.getCurrentData();
+        
+        PhoneService.getAll( currentFiltering, (phones) => {
+          this._catalog.show(phones);
+      });
     }
 
     _render() {
