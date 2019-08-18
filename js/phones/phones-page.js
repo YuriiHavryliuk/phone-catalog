@@ -9,10 +9,10 @@ export default class PhonesPage {
         this._element = element;
 
         this._render();
+        this._initFilter();
         this._initCatalog();
         this._initViewer();
         this._initShoppingCard();
-        this._initFilter();
     }
 
     _initCatalog() {
@@ -20,8 +20,7 @@ export default class PhonesPage {
         element: document.querySelector('[data-component="phone-catalog"]'),
       });
 
-      let phones = PhoneService.getAll();
-      this._catalog.show(phones);
+      this._showPhones();
 
       this._catalog.subscribe('phone-selected', (phoneId) => {
         const phoneDetails = PhoneService.getById(phoneId);
@@ -42,7 +41,7 @@ export default class PhonesPage {
 
         this._viewer.subscribe('back', () => {
         this._viewer.hide();
-        this._catalog.show();
+        this._showPhones();
         });
 
         this._viewer.subscribe('add', (phoneId) => {
@@ -61,18 +60,21 @@ export default class PhonesPage {
         element: document.querySelector('[data-component="filter"]'),
       });
 
-      this._filter.subscribe('order-changed', (orderField) => {
-        let phones = PhoneService.getAll({ orderField });
-
-        this._catalog.show(phones);
+      this._filter.subscribe('order-changed', () => {
+       this._showPhones();
       });
 
-      this._filter.subscribe('query-changed', (query) => {
-        let phones = PhoneService.getAll({ query });
-
-        this._catalog.show(phones);
+      this._filter.subscribe('query-changed', () => {
+        this._showPhones();
       });
   }
+
+    _showPhones() {
+      let currentFiltering = this._filter.getCurrentData();
+      let phones = PhoneService.getAll( currentFiltering );
+
+      this._catalog.show(phones);
+    }
 
     _render() {
         this._element.innerHTML = `
