@@ -12,7 +12,6 @@ const PhoneService = {
 
         if ( xhr.status !== 200 ) {
             console.log(`${ xhr.status } ${ xhr.statusText }`)
-
             return [];
         }
 
@@ -24,8 +23,27 @@ const PhoneService = {
         return sortedPhones;
     },
 
-    getById() {
-        return phoneDetails;
+    getById(phoneId, callback) {
+        let xhr = new XMLHttpRequest();
+
+        xhr.open(
+            'GET', 
+            `https://mate-academy.github.io/phone-catalogue-static/api/phones/${ phoneId }.json`,
+            true
+        );
+
+        xhr.send();
+
+        xhr.onload = () => {
+            if ( xhr.status !== 200 ) {
+                console.log(`${ xhr.status } ${ xhr.statusText }`)
+                return {};
+            }
+    
+            const phoneDetails = JSON.parse(xhr.responseText);
+
+            callback(phoneDetails);
+        };
     },
 
     _filter(phones, query) {
